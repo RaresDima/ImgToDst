@@ -20,6 +20,8 @@ import java.io.File
  *                  The first point's coordinates are relative to the point (0, 0).
  *                  All the points are translated by (+120, -120) so the center point (0, 0) is in the center of the
  *                  plane, not the upper left corner.
+ *                  If a point requires moving the needle head by more than 120 units(the maximum representable number)
+ *                  then that point is split into halves of (x/2, y/2).
  */
 class DstWritablePointList(initialPoints: List<Point>) {
         val points: MutableList<Point> =
@@ -28,6 +30,29 @@ class DstWritablePointList(initialPoints: List<Point>) {
                         .zipWithNext { oldPoint, newPoint -> newPoint relativeTo oldPoint }
                         .apply { this[0][0] *= -1 }
                         .toMutableList()
+                        .apply {
+                                var currInd = 0
+                                while (true) {
+
+                                        val x = this[currInd][0]
+                                        val y = this[currInd][1]
+
+                                        if (x > 120 || y > 120) {
+
+                                                val p1 = Point(x / 2 + x % 2, y / 2 + y % 2)
+                                                val p2 = Point(x / 2,         y / 2)
+
+                                                removeAt(currInd)
+                                                add(currInd, p1)
+                                                add(currInd, p2)
+                                        }
+
+                                        if (currInd >= lastIndex)
+                                                break
+
+                                        currInd ++
+                                }
+                        }
 
 
         /**

@@ -1,3 +1,5 @@
+package debug
+
 import clustering.supervised.Point
 import clustering.supervised.SupervisedKMeans
 import dst.writer.DstWritablePointList
@@ -6,27 +8,27 @@ import utils.misc.then
 import marvin.extensions.Image
 
 object inImgPath {
-        val shapes    = "res/shapes.png"
-        val face      = "res/face.jpg"
-        val face2     = "res/face2.jpg"
-        val monastery = "res/monastery.jpg"
-        val diamond   = "res/diamond.png"
+        val shapes    = "res/img/in/shapes.png"
+        val face      = "res/img/in/face.jpg"
+        val face2     = "res/img/in/face2.jpg"
+        val monastery = "res/img/in/monastery.jpg"
+        val diamond   = "res/img/in/diamond.png"
 }
 
 object outImgPath {
-        val shapes    = "res/shapes_edit.png"
-        val face      = "res/face_edit.jpg"
-        val face2     = "res/face2_edit.jpg"
-        val monastery = "res/monastery_edit.jpg"
-        val diamond   = "res/diamond_edit.png"
+        val shapes    = "res/img/out/shapes_edit.png"
+        val face      = "res/img/out/face_edit.jpg"
+        val face2     = "res/img/out/face2_edit.jpg"
+        val monastery = "res/img/out/monastery_edit.jpg"
+        val diamond   = "res/img/out/diamond_edit.png"
 }
 
 object dstPath {
-        val shapes    = "res/shapes.dst"
-        val face      = "res/face.dst"
-        val face2     = "res/face2.dst"
-        val monastery = "res/monastery.dst"
-        val diamond   = "res/diamond.dst"
+        val shapes    = "res/dst/shapes.dst"
+        val face      = "res/dst/face.dst"
+        val face2     = "res/dst/face2.dst"
+        val monastery = "res/dst/monastery.dst"
+        val diamond   = "res/dst/diamond.dst"
 }
 
 val highlightColors = listOf(Color(0, 0, 100),

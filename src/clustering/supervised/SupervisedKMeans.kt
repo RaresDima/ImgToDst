@@ -124,7 +124,7 @@ class SupervisedKMeans(private val points        : List<Point>,
 
 
         /**
-         * The main KMeans algorithm.
+         * The debug.main KMeans algorithm.
          *
          * @param verbose Whether or not to print the iteration number and J score for every iteration.
          *

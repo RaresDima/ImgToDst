@@ -58,7 +58,7 @@ class ImageObject(image: Image, startPoint: Point, noUnmark: Boolean = false, ve
                         // Move it to the visited set.
                         openSet.remove(currentPoint)
 
-                        // Skip the current point if it is exterior to the object or outside the main image.
+                        // Skip the current point if it is exterior to the object or outside the debug.main image.
                         if (currentPoint.isOutsideImage()) continue
                         if (currentPoint.isExterior())     continue
 
