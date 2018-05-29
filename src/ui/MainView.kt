@@ -1,3 +1,5 @@
+package ui
+
 import javafx.scene.layout.BorderPane
 import tornadofx.*
 
