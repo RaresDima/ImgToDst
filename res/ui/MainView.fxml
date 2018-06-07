@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
@@ -15,7 +16,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <left>
-      <ImageView fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+      <ImageView fx:id="image_preCluster" fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
          <image>
             <Image url="@../img/in/face.JPG" />
          </image>
@@ -25,9 +26,9 @@
       </ImageView>
    </left>
    <right>
-      <ImageView fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+      <ImageView fx:id="image_postCluster" fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
          <image>
-            <Image url="@../face_edit.jpg" />
+            <Image url="@../img/out/face_edit.jpg" />
          </image>
          <BorderPane.margin>
             <Insets bottom="5.0" right="5.0" top="5.0" />
@@ -39,22 +40,48 @@
          <children>
             <HBox prefHeight="35.0" prefWidth="1005.0">
                <children>
-                  <Label prefHeight="25.0" prefWidth="110.0" text="Noise threshold:" HBox.hgrow="NEVER">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
+                  <VBox prefHeight="35.0" prefWidth="160.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="150.0" text="Enable noise threshold:">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </opaqueInsets>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label layoutX="15.0" layoutY="32.0" prefHeight="25.0" prefWidth="110.0" text="Noise threshold:">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </opaqueInsets>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
                      <opaqueInsets>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </opaqueInsets>
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField prefHeight="25.0" prefWidth="100.0" HBox.hgrow="NEVER">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </TextField>
+                     </opaqueInsets></VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <CheckBox fx:id="checkBox_enableNoiseThreshold" mnemonicParsing="false" onAction="#onChangeEnableNoiseThreshold">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                           </VBox.margin>
+                        </CheckBox>
+                        <TextField fx:id="textBox_noiseThreshold" alignment="BOTTOM_LEFT" disable="true" prefHeight="25.0" prefWidth="100.0">
+                           <VBox.margin>
+                              <Insets bottom="3.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </TextField>
+                     </children>
+                  </VBox>
                </children>
                <opaqueInsets>
                   <Insets />
@@ -76,12 +103,12 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="291.0" HBox.hgrow="ALWAYS">
+                  <TextField fx:id="textBox_inputImage" prefHeight="25.0" prefWidth="291.0" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button mnemonicParsing="false" text="Browse" textAlignment="CENTER">
+                  <Button fx:id="button_browseInputImage" mnemonicParsing="false" onAction="#onClickBrowseInputImage" text="Browse" textAlignment="CENTER">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -107,12 +134,12 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField prefHeight="25.0" prefWidth="291.0" HBox.hgrow="ALWAYS">
+                  <TextField fx:id="textBox_outputFolder" prefHeight="25.0" prefWidth="291.0" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button mnemonicParsing="false" text="Browse" textAlignment="CENTER">
+                  <Button fx:id="button_browseOutputFolder" mnemonicParsing="false" onAction="#onClickBrowseOutputFolder" text="Browse" textAlignment="CENTER">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
@@ -131,13 +158,13 @@
                </VBox.margin>
                <children>
                   <Separator prefWidth="200.0" visible="false" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" text="Convert" HBox.hgrow="ALWAYS">
+                  <Button fx:id="button_convert" mnemonicParsing="false" onAction="#onConvert" prefHeight="40.0" prefWidth="250.0" text="Convert" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
                   <Separator prefWidth="50.0" visible="false" HBox.hgrow="NEVER" />
-                  <Button alignment="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" text="Exit" HBox.hgrow="ALWAYS">
+                  <Button fx:id="button_exit" alignment="CENTER" mnemonicParsing="false" onAction="#onExit" prefHeight="40.0" prefWidth="250.0" text="Exit" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
