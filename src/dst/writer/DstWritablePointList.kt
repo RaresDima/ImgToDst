@@ -9,6 +9,7 @@ import utils.list.concat
 import utils.misc.then
 import utils.octet.toBinary
 import java.io.File
+import java.lang.Math.abs
 
 
 /**
@@ -37,7 +38,7 @@ class DstWritablePointList(initialPoints: List<Point>) {
                                         val x = this[currInd][0]
                                         val y = this[currInd][1]
 
-                                        if (x > 120 || y > 120) {
+                                        if (abs(x) > 120 || abs(y) > 120) {
 
                                                 val p1 = Point(x / 2 + x % 2, y / 2 + y % 2)
                                                 val p2 = Point(x / 2,         y / 2)

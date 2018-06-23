@@ -7,29 +7,30 @@ import marvin.extensions.Color
 import utils.misc.then
 import marvin.extensions.Image
 
-object inImgPath {
-        val shapes    = "res/img/in/shapes.png"
-        val face      = "res/img/in/face.jpg"
-        val face2     = "res/img/in/face2.jpg"
-        val monastery = "res/img/in/monastery.jpg"
-        val diamond   = "res/img/in/diamond.png"
-}
+//val inImgPath  = "res/img/in/shapes.png"
+//val outImgPath = "res/img/out/shapes_edit.png"
+//val dstPath    = "res/dst/shapes.dst"
 
-object outImgPath {
-        val shapes    = "res/img/out/shapes_edit.png"
-        val face      = "res/img/out/face_edit.jpg"
-        val face2     = "res/img/out/face2_edit.jpg"
-        val monastery = "res/img/out/monastery_edit.jpg"
-        val diamond   = "res/img/out/diamond_edit.png"
-}
+//val inImgPath  = "res/img/in/face.jpg"
+//val outImgPath = "res/img/out/face_edit.jpg"
+//val dstPath    = "res/dst/face.dst"
 
-object dstPath {
-        val shapes    = "res/dst/shapes.dst"
-        val face      = "res/dst/face.dst"
-        val face2     = "res/dst/face2.dst"
-        val monastery = "res/dst/monastery.dst"
-        val diamond   = "res/dst/diamond.dst"
-}
+val inImgPath  = "res/img/in/face2.jpg"
+val outImgPath = "res/img/out/face2_edit.jpg"
+val dstPath    = "res/dst/face2.dst"
+
+//val inImgPath  = "res/img/in/face3.jpg"
+//val outImgPath = "res/img/out/face3_edit.jpg"
+//val dstPath    = "res/dst/face3.dst"
+
+//val inImgPath  = "res/img/in/monastery.jpg"
+//val outImgPath = "res/img/out/monastery_edit.jpg"
+//val dstPath    = "res/dst/monastery.dst"
+
+//val inImgPath  = "res/img/in/diamond.png"
+//val outImgPath = "res/img/out/diamond_edit.png"
+//val dstPath    = "res/dst/diamond.dst"
+
 
 val highlightColors = listOf(Color(0, 0, 100),
         Color(0, 0, 200),
@@ -66,7 +67,7 @@ val highlightColors = listOf(Color(0, 0, 100),
 
 
 fun main(args: Array<String>) {
-        val img = Image.load(inImgPath.shapes)
+        val img = Image.load(inImgPath)
                 .resizeScaled(240, 240)
 
         val initialColors: List<Point> = (0 until img.height).flatMap { y -> (0 until img.width).map { x -> img[x, y] then ::Point } }
@@ -78,13 +79,13 @@ fun main(args: Array<String>) {
                 .apply { computeObjects(keepSmallObjects = false, smallObjectThreshold = 50, verbose = false) }
                 .colorObjects(highlightColors)
                 .colorBackground(newBgColor = Color(255, 255, 255))
-                .save(outImgPath.shapes)
+                .save(outImgPath)
 
         clusteredImg.objects then ::println
 
         val dstPoints = clusteredImg.objects.flatMap { it.allPointsSorted() } then ::DstWritablePointList
 
-        dstPoints.plotPointsToFile(dstPath.shapes)
+        dstPoints.plotPointsToFile(dstPath)
 
 
 }

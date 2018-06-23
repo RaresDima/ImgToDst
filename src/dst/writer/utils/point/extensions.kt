@@ -16,8 +16,8 @@ import utils.bool.toInt
  */
 fun Point.toDstInstructionBits(jmp: Boolean = false, csw: Boolean = false) : List<List<Int>> {
 
-        val x = this[1].decimalToBalancedTernary()
-        val y = this[0].decimalToBalancedTernary()
+        val x = this[0].times(-1).decimalToBalancedTernary()
+        val y = this[1].times(-1).decimalToBalancedTernary()
 
         val result = List(3) { byte ->
                 List(8) { pos ->
@@ -42,6 +42,7 @@ fun Point.toDstInstructionBits(jmp: Boolean = false, csw: Boolean = false) : Lis
 
                                 (byte == 2) and (pos == 2) -> (y[4] ==  1).toInt()      // y+81
                                 (byte == 2) and (pos == 3) -> (y[4] == -1).toInt()      // y-81
+
 
                                 (byte == 0) and (pos == 7) -> (x[0] ==  1).toInt()      // x+1
                                 (byte == 0) and (pos == 6) -> (x[0] == -1).toInt()      // x-1

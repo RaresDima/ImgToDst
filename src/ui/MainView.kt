@@ -7,6 +7,8 @@ import debug.dstPath
 import debug.highlightColors
 import debug.inImgPath
 import debug.outImgPath
+import javafx.event.Event
+import javafx.event.EventHandler
 import javafx.scene.control.*
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
@@ -22,20 +24,26 @@ import kotlin.system.exitProcess
 class MainView : View("My View") {
         override val root: BorderPane by fxml()
 
-        val checkBox_enableNoiseThreshold by fxid<CheckBox> ("checkBox_enableNoiseThreshold")
-        val textBox_noiseThreshold        by fxid<TextField>("textBox_noiseThreshold")
+        val checkBox_enableNoiseThreshold  by fxid<CheckBox>   ("checkBox_enableNoiseThreshold")
+        val textBox_noiseThreshold         by fxid<TextField>  ("textBox_noiseThreshold")
 
-        val button_exit                   by fxid<Button>   ("button_exit")
-        val button_convert                by fxid<Button>   ("button_convert")
+        val checkBox_foceKeepSpecificColor by fxid<CheckBox>   ("checkBox_foceKeepSpecificColor")
+        val colorPicker_colorToKeep        by fxid<ColorPicker>("colorPicker_colorToKeep")
 
-        val button_browseInputImage       by fxid<Button>   ("button_browseInputImage")
-        val button_browseOutputFolder     by fxid<Button>   ("button_browseOutputFolder")
+        val button_exit                    by fxid<Button>     ("button_exit")
+        val button_convert                 by fxid<Button>     ("button_convert")
 
-        val textBox_inputImagePath        by fxid<TextField>("textBox_inputImage")
-        val textBox_outputFolderPath      by fxid<TextField>("textBox_outputFolder")
+        val button_browseInputImage        by fxid<Button>     ("button_browseInputImage")
+        val button_browseOutputFolder      by fxid<Button>     ("button_browseOutputFolder")
 
-        val image_preCluster              by fxid<ImageView>("image_preCluster")
-        val image_postCluster             by fxid<ImageView>("image_postCluster")
+        val textBox_inputImagePath         by fxid<TextField>  ("textBox_inputImage")
+        val textBox_outputFolderPath       by fxid<TextField>  ("textBox_outputFolder")
+
+        val image_preCluster               by fxid<ImageView>  ("image_preCluster")
+        val image_postCluster              by fxid<ImageView>  ("image_postCluster")
+
+
+        var image: Image? = null
 
 
         init {
@@ -49,14 +57,43 @@ class MainView : View("My View") {
                 }
 
                 primaryStage.isResizable = false
+
+
+                image_preCluster.onMouseClicked = EventHandler { e ->
+                        when {
+                                image == null -> run {
+                                        Alert(Alert.AlertType.ERROR).apply {
+                                                title = "Invalid Input Image";
+                                                contentText = "There is no file with the path given as the input image path."
+                                        }.showAndWait()
+                                }
+
+                                !checkBox_foceKeepSpecificColor.isSelected -> run {}
+
+                                else -> {
+                                        val x: Int = e.x.toInt() / 2
+                                        val y: Int = e.y.toInt() / 2
+
+                                        colorPicker_colorToKeep.value =
+                                                javafx.scene.paint.Color.rgb(
+                                                        image!![x, y].red,
+                                                        image!![x, y].green,
+                                                        image!![x, y].blue
+                                                )
+                                }
+                        }
+                }
         }
 
 
         fun onChangeEnableNoiseThreshold() { textBox_noiseThreshold.isDisable = ! checkBox_enableNoiseThreshold.isSelected }
 
 
+        fun onChangeForceKeepSpecificColor() { colorPicker_colorToKeep.isDisable = ! checkBox_foceKeepSpecificColor.isSelected }
+
+
         fun onClickBrowseInputImage() =
-                with(FileChooser().apply { setTitle("Output Folder") }.showOpenDialog(primaryStage)) {
+                with(FileChooser().apply { title = "Output Folder" }.showOpenDialog(primaryStage)) {
                         if (this != null)
                                 textBox_inputImagePath.text = this.toString()
                 }
@@ -64,7 +101,7 @@ class MainView : View("My View") {
 
 
         fun onClickBrowseOutputFolder() =
-                with(DirectoryChooser().apply { setTitle("Output Folder") }.showDialog(primaryStage)) {
+                with(DirectoryChooser().apply { title = "Output Folder" }.showDialog(primaryStage)) {
                         if (this != null)
                                 textBox_outputFolderPath.text = this.toString()
                 }
@@ -83,14 +120,25 @@ class MainView : View("My View") {
 
                 try {
                         if (checkBox_enableNoiseThreshold.isSelected)
-                                if (textBox_inputImagePath.text.toInt() < 1)
-                                        throw java.lang.NumberFormatException()
+                                if (textBox_noiseThreshold.text.toInt() < 1) {
+                                        Alert(Alert.AlertType.ERROR).apply {
+                                                title = "Invalid Threshold";
+                                                contentText = "The threshold field is not a positive integer higher than 1."
+                                        }.showAndWait()
+                                        button_convert.text = "Convert"
+                                        button_exit.isDisable               = false
+                                        button_convert.isDisable            = false
+                                        button_browseInputImage.isDisable   = false
+                                        button_browseOutputFolder.isDisable = false
+                                        return
+                                }
                 }
                 catch (e: Exception) {
                         Alert(Alert.AlertType.ERROR).apply {
-                                setTitle("Invalid Threshold");
-                                setContentText("The threshold field is not a positive integer higher than 1.")
+                                title = "Invalid Threshold";
+                                contentText = "The threshold field is not a valid positive integer higher than 1."
                         }.showAndWait()
+                        button_convert.text                 = "Convert"
                         button_exit.isDisable               = false
                         button_convert.isDisable            = false
                         button_browseInputImage.isDisable   = false
@@ -105,9 +153,10 @@ class MainView : View("My View") {
 
                 if(!inputImage.exists()) {
                         Alert(Alert.AlertType.ERROR).apply {
-                                setTitle("Invalid Input Image");
-                                setContentText("There is no file with the path given as the input image path.")
+                                title = "Invalid Input Image";
+                                contentText = "There is no file with the path given as the input image path."
                         }.showAndWait()
+                        button_convert.text                 = "Convert"
                         button_exit.isDisable               = false
                         button_convert.isDisable            = false
                         button_browseInputImage.isDisable   = false
@@ -117,9 +166,10 @@ class MainView : View("My View") {
 
                 if(inputImage.isDirectory) {
                         Alert(Alert.AlertType.ERROR).apply {
-                                setTitle("Invalid Input Image");
-                                setContentText("The path given as the input image path is a directory.")
+                                title = "Invalid Input Image";
+                                contentText = "The path given as the input image path is a directory."
                         }.showAndWait()
+                        button_convert.text                 = "Convert"
                         button_exit.isDisable               = false
                         button_convert.isDisable            = false
                         button_browseInputImage.isDisable   = false
@@ -128,14 +178,16 @@ class MainView : View("My View") {
                 }
 
                 image_preCluster.image = javafx.scene.image.Image(inputImage.toURI().toString())
+                image = Image.load(textBox_inputImagePath.text).resizeScaled(240, 240)
 
                 button_convert.text = "Checking output folder..."
 
                 if(!outputFolder.exists()) {
                         Alert(Alert.AlertType.ERROR).apply {
-                                setTitle("Invalid Output Folder");
-                                setContentText("There is no folder with the path given as the output folder path.")
+                                title = "Invalid Output Folder";
+                                contentText = "There is no folder with the path given as the output folder path."
                         }.showAndWait()
+                        button_convert.text                 = "Convert"
                         button_exit.isDisable               = false
                         button_convert.isDisable            = false
                         button_browseInputImage.isDisable   = false
@@ -145,9 +197,10 @@ class MainView : View("My View") {
 
                 if(!outputFolder.isDirectory) {
                         Alert(Alert.AlertType.ERROR).apply {
-                                setTitle("Invalid Output Folder");
-                                setContentText("The path given as the output folder path is a directory.")
+                                title = "Invalid Output Folder";
+                                contentText = "The path given as the output folder path is a directory."
                         }.showAndWait()
+                        button_convert.text                 = "Convert"
                         button_exit.isDisable               = false
                         button_convert.isDisable            = false
                         button_browseInputImage.isDisable   = false
@@ -160,7 +213,21 @@ class MainView : View("My View") {
                 val img = Image.load(inputImage.path).resizeScaled(240, 240)
 
                 val initialColors: List<Point> = (0 until img.height).flatMap { y -> (0 until img.width).map { x -> img[x, y] then ::Point } }
-                val reducedColors: List<Point> = SupervisedKMeans(initialColors, 2).run(verbose = false)
+                val reducedColors: List<Point> = SupervisedKMeans(
+                        initialColors,
+                        2,
+                        when (checkBox_foceKeepSpecificColor.isSelected) {
+                                true -> listOf(
+                                        Point(
+                                                colorPicker_colorToKeep.value.red.times(255).toInt(),
+                                                colorPicker_colorToKeep.value.green.times(255).toInt(),
+                                                colorPicker_colorToKeep.value.blue.times(255).toInt()
+                                        )
+                                )
+                                false -> listOf()
+                        }
+                ).run(verbose = false)
+
 
                 val clusteredImg = img.mapPixels { px -> reducedColors.minBy { it sqrDistanceTo Point(px) }!!.toColor() }
 
@@ -173,7 +240,8 @@ class MainView : View("My View") {
                                                         true  -> textBox_noiseThreshold.text.toInt()
                                                         false -> 0
                                                 },
-                                        verbose = false)
+                                        verbose = false
+                                )
                         }
                         .colorObjects(listOf(Color(50, 50, 50)))
                         .colorBackground(newBgColor = Color(250, 250, 250))
@@ -187,11 +255,42 @@ class MainView : View("My View") {
 
                 dstPoints.plotPointsToFile("${outputFolder.path}\\${inputImage.nameWithoutExtension}_embroidery.dst")
 
-                Alert(Alert.AlertType.INFORMATION).apply { setContentText("Conversion complete.") }.show()
+                Alert(Alert.AlertType.INFORMATION).apply { contentText = "Conversion complete." }.show()
+
+                button_convert.text = "Convert"
 
                 button_exit.isDisable               = false
                 button_convert.isDisable            = false
                 button_browseInputImage.isDisable   = false
                 button_browseOutputFolder.isDisable = false
         }
+
+
+        fun onLoadImage() {
+                val inputImage = File(textBox_inputImagePath.text)
+
+                when {
+                        !inputImage.exists() -> run {
+                                Alert(Alert.AlertType.ERROR).apply {
+                                        title = "Invalid Input Image";
+                                        contentText = "There is no file with the path given as the input image path."
+                                }.showAndWait()
+                        }
+
+                        inputImage.isDirectory -> run {
+                                Alert(Alert.AlertType.ERROR).apply {
+                                        title = "Invalid Input Image";
+                                        contentText = "The path given as the input image path is a directory."
+                                }.showAndWait()
+                        }
+
+                        else -> run {
+                                image_preCluster.image = javafx.scene.image.Image(inputImage.toURI().toString())
+                                image = Image.load(textBox_inputImagePath.text).resizeScaled(240, 240)
+                        }
+                }
+        }
+
+
+
 }

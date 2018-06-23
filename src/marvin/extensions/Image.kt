@@ -20,6 +20,7 @@ open class Image internal constructor(private val image: MarvinImage) {
 
         val objects: List<ImageObject> by lazy { computeObjects() }
 
+
         /**
          * Factory object for the [Image] class.
          */
