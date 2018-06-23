@@ -234,7 +234,7 @@ class MainView : View("My View") {
                 clusteredImg
                         .apply {
                                 computeObjects(
-                                        keepSmallObjects = checkBox_enableNoiseThreshold.isSelected,
+                                        keepSmallObjects = !checkBox_enableNoiseThreshold.isSelected,
                                         smallObjectThreshold =
                                                 when (checkBox_enableNoiseThreshold.isSelected) {
                                                         true  -> textBox_noiseThreshold.text.toInt()
