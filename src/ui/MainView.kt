@@ -21,7 +21,7 @@ import utils.misc.then
 import java.io.File
 import kotlin.system.exitProcess
 
-class MainView : View("My View") {
+class MainView : View("SimpleStitch") {
         override val root: BorderPane by fxml()
 
         val checkBox_enableNoiseThreshold  by fxid<CheckBox>   ("checkBox_enableNoiseThreshold")
@@ -54,6 +54,17 @@ class MainView : View("My View") {
                                 | before it is considered "noise" and removed from the resulting embroidery.
                                 """.trimMargin()
 
+                }
+
+                checkBox_foceKeepSpecificColor.tooltip = Tooltip().apply {
+                        text = """
+                                | If a small element is desired to be kept in the output image(such as the iris of an eye)
+                                | then the color of that image element can be forcibly kept in the image, making the
+                                | area with a similar color appear in the output image.
+                                |
+                                | The color to be kept can be selected using the color picker or by simply clicking on the
+                                | image loaded using the 'Load selected image' button.
+                                """.trimMargin()
                 }
 
                 primaryStage.isResizable = false

@@ -97,7 +97,7 @@ class SupervisedKMeans(private val points        : List<Point>,
                 val mobileClusters : List<Cluster>         = clusters.slice(0 until mobileK)
                 val mobileCentroids: MutableList<Centroid> = mutableListOf()
 
-                mobileClusters.forEachIndexed { clusterIndex, cluster ->
+                mobileClusters.forEach { cluster ->
                         // Average the i'th coordinate for all coordinates of all points in the cluster
                         val newCentroid =
                                 (0 until points.first().dimensions())
@@ -136,11 +136,10 @@ class SupervisedKMeans(private val points        : List<Point>,
 
                 // Initial clusters
                 var newClusters = mobileCentroids concat fixedCentroids then ::clusterize
-                var oldClusters = listOf<Cluster>()
 
                 // Initial J
-                var newJScore = computeJScore(newClusters, mobileCentroids concat fixedCentroids)
-                var oldJScore = Int.MAX_VALUE
+                var newJScore: Int = computeJScore(newClusters, mobileCentroids concat fixedCentroids)
+                var oldJScore: Int
 
                 if (verbose) println("ITER : INIT \t J SCORE : %8d".format(newJScore))
 
@@ -152,7 +151,6 @@ class SupervisedKMeans(private val points        : List<Point>,
 
 
                         // Compute new clusters
-                        oldClusters = newClusters.toList()
                         newClusters = mobileCentroids concat fixedCentroids then ::clusterize
 
                         // Compute J score
